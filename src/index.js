@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function Square(props) {
+    const isSelect = props.isSelect ? 'selected' : '';
     return (
-        <button className="square" onClick={props.onClick}>
+        <button className={`square ${isSelect}`} onClick={props.onClick}>
             {props.value}
         </button>
     );
@@ -12,7 +13,8 @@ function Square(props) {
 
 class Board extends React.Component {
     renderSquare(i) {
-        return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
+        const isSelect = this.props.currentChoice === i;
+        return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} isSelect={isSelect} />;
     }
 
     render() {
@@ -104,7 +106,7 @@ class Game extends React.Component {
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board squares={current.squares} onClick={(i) => this.handleClick(i)} />
+                    <Board currentChoice={current.choice} squares={current.squares} onClick={(i) => this.handleClick(i)} />
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
