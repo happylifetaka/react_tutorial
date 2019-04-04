@@ -21,9 +21,9 @@ class Board extends React.Component {
         const items = [];
         let items2 = [];
 
-        for(let x = 0;x <3; x++) {
+        for(let y = 0;y <3; y++) {
             items2= [];
-            for (let y = 0; y < 3; y++) {
+            for (let x = 0; x < 3; x++) {
                 items2.push(
                     this.renderSquare(y * 3 + x)
                 )
@@ -51,7 +51,13 @@ class Game extends React.Component {
             }],
             xIsNext: true,
             stepNumber:0,
+            sort:false,
         };
+    }
+    sortClick(){
+        this.setState({
+            sort:!this.state.sort
+        })
     }
     handleClick(i) {
         const history = this.state.history.slice(0,this.state.stepNumber + 1);
@@ -79,12 +85,14 @@ class Game extends React.Component {
         })
     }
     render() {
-        const history = this.state.history;
+        let history = this.state.history.slice();
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
         const draw = calculateDraw(current.squares);
-        const moves = history.map((h,move) => {
-
+        if(this.state.sort){
+            history = history.reverse()
+        }
+        let moves = history.map((h,move) => {
             const desc = move ?
                 'Go to move #' + move :
                 'Go to game start';
@@ -96,6 +104,7 @@ class Game extends React.Component {
                 </li>
             )
         });
+
         let status;
         if (winner) {
             status = 'Winner:' + winner
@@ -104,6 +113,8 @@ class Game extends React.Component {
         }else{
             status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
+        const reversed = this.state.sort;
+
         return (
             <div className="game">
                 <div className="game-board">
@@ -111,7 +122,8 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
-                    <ol>{moves}</ol>
+                    <div><button onClick={() => this.sortClick() }>sort</button></div>
+                    <ol reversed={reversed}>{moves}</ol>
                 </div>
             </div>
         );
